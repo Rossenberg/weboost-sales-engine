@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WeBoost Sales Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f4f5f7; --card:#ffffff; --card2:#f8f9fb; --text:#13161b; --muted:#6b7280; --line:#e6e8ec;
+    --accent:#2f6bff; --accent-soft:#e8efff; --green:#14955b; --green-soft:#e3f6ec; --amber:#b7791f; --amber-soft:#fdf3e1;
+    --red:#d33a3a; --red-soft:#fde8e8; --violet:#7c4dff; --violet-soft:#efe9ff; --shadow:0 1px 2px rgba(16,24,40,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0d0f12; --card:#16191e; --card2:#1b1f25; --text:#eceef2; --muted:#9aa1ac; --line:#262b33;
+      --accent:#5b8cff; --accent-soft:#1c2740; --green:#38c98a; --green-soft:#12291f; --amber:#f0b45a; --amber-soft:#2d2414;
+      --red:#ff6b6b; --red-soft:#2e1717; --violet:#a98bff; --violet-soft:#231c3a; --shadow:none;
+    }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 Inter, system-ui, sans-serif; }
+  a { color:var(--accent); text-decoration:none; }
+  header { position:sticky; top:0; z-index:5; background:var(--card); border-bottom:1px solid var(--line); }
+  .bar { max-width:1280px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:700; font-size:16px; margin-right:auto; }
+  .logo { width:26px; height:26px; border-radius:8px; background:linear-gradient(135deg,var(--accent),var(--violet)); }
+  .pill { font-size:12px; padding:4px 10px; border-radius:99px; background:var(--card2); border:1px solid var(--line); color:var(--muted); white-space:nowrap; }
+  .pill.live { background:var(--green-soft); color:var(--green); border-color:transparent; }
+  .pill.test { background:var(--amber-soft); color:var(--amber); border-color:transparent; }
+  .btn { border:1px solid var(--line); background:var(--card); color:var(--text); padding:7px 12px; border-radius:9px; cursor:pointer; font:500 13px Inter, sans-serif; }
+  .btn:hover { border-color:var(--accent); }
+  .btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .btn.danger { color:var(--red); }
+  .btn.ghost { border-color:transparent; background:transparent; color:var(--muted); }
+  nav { max-width:1280px; margin:0 auto; padding:0 16px; display:flex; gap:4px; overflow-x:auto; }
+  nav button { border:0; background:none; padding:10px 12px; font:500 14px Inter, sans-serif; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
+  nav button.on { color:var(--text); border-bottom-color:var(--accent); }
+  nav .count { font-size:11px; background:var(--accent); color:#fff; border-radius:99px; padding:1px 7px; margin-left:4px; }
+  main { max-width:1280px; margin:0 auto; padding:20px 16px 60px; }
+  h2 { font-size:18px; margin:0 0 4px; }
+  .hint { color:var(--muted); margin:0 0 16px; font-size:13px; }
+  .grid { display:grid; gap:12px; }
+  .kpis { grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; box-shadow:var(--shadow); }
+  .kpi .label { color:var(--muted); font-size:12px; }
+  .kpi .val { font-size:26px; font-weight:700; margin-top:4px; letter-spacing:-.02em; }
+  .kpi .sub { font-size:12px; color:var(--muted); margin-top:2px; }
+  .two { grid-template-columns:1.4fr 1fr; margin-top:12px; }
+  @media (max-width: 900px) { .two { grid-template-columns:1fr; } }
+  .card h3 { margin:0 0 12px; font-size:14px; }
+  .funnel .row { display:grid; grid-template-columns:150px 1fr 60px; align-items:center; gap:10px; margin:7px 0; font-size:13px; }
+  .track { height:10px; background:var(--card2); border-radius:99px; overflow:hidden; }
+  .fill { height:100%; background:var(--accent); border-radius:99px; }
+  .fill.green { background:var(--green); } .fill.amber { background:var(--amber); } .fill.violet { background:var(--violet); }
+  .num { text-align:right; font-variant-numeric:tabular-nums; font-weight:600; }
+  table { width:100%; border-collapse:collapse; }
+  th { text-align:left; font-size:12px; color:var(--muted); font-weight:500; padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  td { padding:10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  tr.click { cursor:pointer; } tr.click:hover td { background:var(--card2); }
+  .tablewrap { overflow-x:auto; }
+  .badge { display:inline-block; font-size:11.5px; padding:2px 8px; border-radius:99px; background:var(--card2); color:var(--muted); white-space:nowrap; font-weight:500; }
+  .b-green { background:var(--green-soft); color:var(--green); } .b-amber { background:var(--amber-soft); color:var(--amber); }
+  .b-red { background:var(--red-soft); color:var(--red); } .b-blue { background:var(--accent-soft); color:var(--accent); } .b-violet { background:var(--violet-soft); color:var(--violet); }
+  .prob { display:flex; align-items:center; gap:8px; min-width:120px; } .prob .track { flex:1; height:8px; }
+  .muted { color:var(--muted); } .small { font-size:12px; }
+  .empty { text-align:center; color:var(--muted); padding:36px 12px; }
+  .chips { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .chip { border:1px solid var(--line); background:var(--card); padding:5px 11px; border-radius:99px; cursor:pointer; font:500 12.5px Inter, sans-serif; color:var(--muted); }
+  .chip.on { background:var(--text); color:var(--bg); border-color:var(--text); }
+  .approve { display:grid; gap:12px; }
+  .acard { display:grid; grid-template-columns:1fr 1.3fr; gap:16px; }
+  @media (max-width: 900px) { .acard { grid-template-columns:1fr; } }
+  .acard .facts div { margin-bottom:8px; } .acard .facts b { display:block; font-size:12px; color:var(--muted); font-weight:500; }
+  input.in, textarea.in, select.in { width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:9px; background:var(--card); color:var(--text); font:inherit; }
+  textarea.in { min-height:170px; resize:vertical; line-height:1.5; }
+  .actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+  .stage { display:flex; gap:4px; } .stage span { width:26px; height:6px; border-radius:99px; background:var(--card2); border:1px solid var(--line); }
+  .stage span.done { background:var(--accent); border-color:var(--accent); }
+  .chart { display:flex; align-items:flex-end; gap:6px; height:150px; padding-top:8px; }
+  .chart .col { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:2px; min-width:0; }
+  .chart .seg { width:100%; max-width:28px; border-radius:4px 4px 0 0; } .chart .seg.fu { background:var(--violet); border-radius:0; } .chart .seg.f { background:var(--accent); }
+  .chart .d { font-size:10px; color:var(--muted); margin-top:4px; white-space:nowrap; }
+  .legend { display:flex; gap:14px; font-size:12px; color:var(--muted); margin-top:8px; } .legend i { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; }
+  .drawer-bg { position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:20; display:none; }
+  .drawer { position:fixed; top:0; right:0; bottom:0; width:min(640px,100%); background:var(--bg); z-index:21; overflow-y:auto; transform:translateX(100%); transition:transform .2s; border-left:1px solid var(--line); }
+  .drawer.open { transform:none; } .drawer-bg.open { display:block; }
+  .drawer .head { position:sticky; top:0; background:var(--card); border-bottom:1px solid var(--line); padding:14px 16px; display:flex; align-items:center; gap:10px; }
+  .drawer .body { padding:16px; display:grid; gap:12px; }
+  .msg { border:1px solid var(--line); border-radius:12px; padding:12px; background:var(--card); }
+  .msg.in { border-color:var(--green); }
+  .msg .meta { font-size:12px; color:var(--muted); margin-bottom:6px; display:flex; justify-content:space-between; gap:8px; }
+  .msg pre { white-space:pre-wrap; font:inherit; margin:0; }
+  .kv { display:grid; grid-template-columns:140px 1fr; gap:6px 10px; font-size:13px; } .kv div:nth-child(odd) { color:var(--muted); }
+  .rule { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--line); } .rule p { margin:0; flex:1; }
+  .toast { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg); padding:10px 16px; border-radius:10px; font-size:13px; z-index:30; display:none; }
+  .callout { background:var(--accent-soft); border-radius:12px; padding:12px 14px; font-size:13px; margin-bottom:12px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand"><span class="logo"></span>WeBoost Sales Engine</div>
+    <span id="mode" class="pill"></span>
+    <span id="sync" class="pill"></span>
+    <button class="btn" onclick="load()">Обновить</button>
+    <a class="btn ghost" href="/logout">Выйти</a>
+  </div>
+  <nav id="tabs"></nav>
+</header>
+<main id="view"></main>
+<div class="drawer-bg" id="dbg" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="toast" id="toast"></div>
+
+<script>
+const S = { data:null, tab:'overview', replyFilter:'ALL', leadFilter:'', leadSearch:'' };
+const STATUS = {
+  NEW:['Новый',''], RESEARCHED:['Исследован',''], READY:['Ждёт одобрения','b-amber'], APPROVED:['Одобрен','b-blue'],
+  REJECTED:['Отклонён','b-red'], SENT:['Отправлен','b-blue'], FOLLOWUP_1:['Follow-up 1','b-violet'], FOLLOWUP_2:['Follow-up 2','b-violet'],
+  FOLLOWUP_3:['Follow-up 3','b-violet'], SEQUENCE_DONE:['Цепочка завершена',''], REPLIED:['Ответил','b-green'], INTERESTED:['Заинтересован','b-green'],
+  QUESTION:['Вопрос','b-blue'], LATER:['Тянет время','b-amber'], NOT_INTERESTED:['Не интересно','b-red'], UNSUBSCRIBED:['Отписался','b-red'],
+  BOUNCED:['Не доставлено','b-red'], NOT_ICP:['Не брокер',''], TOO_LARGE:['Крупная компания',''], SKIPPED_NO_SITE:['Нет сайта',''],
+  MEETING_BOOKED:['Встреча','b-green'], CUSTOMER:['Клиент','b-green'], ERROR:['Ошибка','b-red'],
+};
+const CAT = { INTERESTED:['Заинтересован','b-green'], QUESTION:['Вопрос','b-blue'], LATER:['Тянет время','b-amber'], REFERRAL:['Переадресовал','b-violet'],
+  NOT_INTERESTED:['Не интересно','b-red'], UNSUBSCRIBE:['Отписка','b-red'], OUT_OF_OFFICE:['Автоответ',''], OTHER:['Другое',''] };
+const STEP = { analysis:'Исследование компаний', email:'Написание писем', followup:'Follow-up', reply_classification:'Разбор ответов' };
+const SENT_STATES = ['SENT','FOLLOWUP_1','FOLLOWUP_2','FOLLOWUP_3','SEQUENCE_DONE','REPLIED','INTERESTED','QUESTION','LATER','NOT_INTERESTED','UNSUBSCRIBED','BOUNCED','MEETING_BOOKED','CUSTOMER'];
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => Number(n || 0).toLocaleString('ru-RU');
+const money = n => { n = Number(n || 0); return n === 0 ? '$0' : '$' + n.toFixed(n >= 1 ? 2 : n >= 0.01 ? 3 : 4); };
+const pct = (a, b) => b ? Math.round(a / b * 1000) / 10 + '%' : '—';
+function when(iso) { if (!iso) return '—'; const d = new Date(iso); return isNaN(d) ? '—' : d.toLocaleString('ru-RU', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }); }
+function ago(iso) { if (!iso) return 'никогда'; const m = Math.round((Date.now() - new Date(iso)) / 60000); if (m < 1) return 'только что'; if (m < 60) return m + ' мин назад'; if (m < 1440) return Math.round(m/60) + ' ч назад'; return Math.round(m/1440) + ' дн назад'; }
+const badge = s => { const [t, c] = STATUS[s] || [s || '—', '']; return `<span class="badge ${c}">${esc(t)}</span>`; };
+const catBadge = s => { const [t, c] = CAT[s] || [s || '—', '']; return `<span class="badge ${c}">${esc(t)}</span>`; };
+function probBar(p) { if (p == null) return '<span class="muted small">нет ответа</span>'; const cls = p >= 40 ? 'green' : p >= 15 ? 'amber' : ''; return `<div class="prob"><div class="track"><div class="fill ${cls}" style="width:${p}%"></div></div><b>${p}%</b></div>`; }
+function toast(t) { const el = document.getElementById('toast'); el.textContent = t; el.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => el.style.display = 'none', 2600); }
+
+async function api(path, opts) { const r = await fetch(path, opts); if (r.status === 401) { location.href = '/login'; throw new Error('auth'); } return r.json(); }
+async function load() { S.data = await api('/api/data'); render(); }
+async function act(lead_id, action, extra = {}) {
+  await api('/api/action', { method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({ lead_id, action, ...extra }) });
+  toast({ approve:'Одобрено. Уйдёт после синхронизации', edit_approve:'Сохранено и одобрено', reject:'Отклонено', meeting:'Отмечена встреча', dnc:'Больше не пишем этой компании', reopen:'Возвращено на одобрение' }[action] || 'Готово');
+  await load();
+}
+
+// ---------- derived numbers ----------
+function stats() {
+  const d = S.data, L = d.leads, st = d.statuses;
+  const sent = L.filter(l => l.initial_email_sent_at).length;
+  const fu = L.reduce((a, l) => a + ['followup_1_sent_at','followup_2_sent_at','followup_3_sent_at'].filter(k => l[k]).length, 0);
+  const replied = L.filter(l => l.reply_received || l.reply_category && l.reply_category !== 'OUT_OF_OFFICE').length;
+  const interested = L.filter(l => ['INTERESTED','MEETING_BOOKED','CUSTOMER'].includes(l.status)).length;
+  const meetings = L.filter(l => l.meeting_booked || l.status === 'MEETING_BOOKED').length;
+  const bounced = st.BOUNCED || 0;
+  const broker = L.filter(l => !['NEW','NOT_ICP','TOO_LARGE','SKIPPED_NO_SITE','ERROR'].includes(l.status)).length;
+  const withEmail = L.filter(l => l.email_body).length;
+  const poolTotal = +d.meta.pool_total || 0, poolImported = +d.meta.pool_imported || L.length;
+  return { sent, fu, replied, interested, meetings, bounced, broker, withEmail, poolTotal, poolImported, ready: st.READY || 0, approved: st.APPROVED || 0 };
+}
+
+// ---------- tabs ----------
+const TABS = [
+  ['overview','Обзор'], ['approve','Одобрение писем'], ['followups','Отправленные и follow-up'], ['replies','Ответы и прогноз'],
+  ['training','Обучение AI'], ['costs','Расходы AI'], ['leads','Все компании'],
+];
+function renderTabs() {
+  const k = stats();
+  const counts = { approve:k.ready, replies: S.data.leads.filter(l => l.lead_probability != null).length };
+  document.getElementById('tabs').innerHTML = TABS.map(([id, t]) => `<button class="${S.tab === id ? 'on' : ''}" onclick="go('${id}')">${t}${counts[id] ? `<span class="count">${counts[id]}</span>` : ''}</button>`).join('');
+}
+function go(t) { S.tab = t; render(); window.scrollTo(0, 0); }
+
+function render() {
+  const m = S.data.meta;
+  const live = m.dry_run === 'false';
+  const modeEl = document.getElementById('mode');
+  modeEl.className = 'pill ' + (live ? 'live' : 'test');
+  modeEl.textContent = live ? 'Боевой режим: письма уходят' : 'Тестовый режим: письма не уходят';
+  document.getElementById('sync').textContent = 'Синхронизация: ' + ago(m.last_sync);
+  renderTabs();
+  document.getElementById('view').innerHTML = ({ overview, approve, followups, replies, training, costs, leads })[S.tab]();
+}
+
+// ---------- Обзор ----------
+function overview() {
+  const d = S.data, k = stats(), m = d.meta, u = d.usage;
+  const cap = +m.daily_cap || 0;
+  const kpi = (label, val, sub = '') => `<div class="card kpi"><div class="label">${label}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`;
+  const hot = d.leads.filter(l => l.lead_probability != null && !['NOT_INTERESTED','UNSUBSCRIBED'].includes(l.status)).slice(0, 6);
+  const due = d.leads.filter(l => ['SENT','FOLLOWUP_1','FOLLOWUP_2'].includes(l.status) && l.next_followup_at && !l.reply_received).sort((a, b) => a.next_followup_at.localeCompare(b.next_followup_at)).slice(0, 6);
+  const funnel = [
+    ['База FMCSA', k.poolTotal || k.poolImported, ''], ['Взято в работу', k.poolImported, ''], ['Подтверждённые брокеры', k.broker, ''],
+    ['Письмо написано', k.withEmail, ''], ['Отправлено', k.sent, 'violet'], ['Ответили', k.replied, 'green'], ['Заинтересованы', k.interested, 'green'], ['Встречи', k.meetings, 'green'],
+  ];
+  const max = Math.max(1, ...funnel.map(f => f[1]));
+  return `
+  ${m.dry_run !== 'false' ? `<div class="callout">Сейчас идёт прогрев ящика${m.send_start_date ? `, первая отправка запланирована на <b>${esc(m.send_start_date)}</b>` : ''}. Письма можно уже проверять и одобрять: они уйдут, когда включим боевой режим.</div>` : ''}
+  <div class="grid kpis">
+    ${kpi('Отправлено сегодня', fmt(d.sentToday), cap ? `лимит ${cap} в день` : 'лимит не задан (прогрев)')}
+    ${kpi('Первых писем всего', fmt(k.sent), `follow-up: ${fmt(k.fu)}`)}
+    ${kpi('Follow-up на сегодня', fmt(d.followupsDueToday), 'уйдут при следующем запуске')}
+    ${kpi('Ответили', fmt(k.replied), 'reply rate ' + pct(k.replied, k.sent))}
+    ${kpi('Заинтересованы', fmt(k.interested), `встреч: ${fmt(k.meetings)}`)}
+    ${kpi('Не доставлено', fmt(k.bounced), 'bounce ' + pct(k.bounced, k.sent) + ' (норма < 2%)')}
+    ${kpi('Ждут одобрения', fmt(k.ready), `одобрено, ждут отправки: ${fmt(k.approved)}`)}
+    ${kpi('Осталось в базе', fmt(Math.max(0, k.poolTotal - k.poolImported)), `из ${fmt(k.poolTotal)} брокеров с email`)}
+    ${kpi('AI сегодня', money(u.today), `месяц ${money(u.month)} · всего ${money(u.total)}`)}
+  </div>
+  <div class="grid two">
+    <div class="card"><h3>Отправки за 14 дней</h3>${chart(d.perDay, ['first','followup'])}
+      <div class="legend"><span><i style="background:var(--accent)"></i>Первые письма</span><span><i style="background:var(--violet)"></i>Follow-up</span></div></div>
+    <div class="card funnel"><h3>Воронка</h3>${funnel.map(([t, n, c]) => `<div class="row"><span>${t}</span><div class="track"><div class="fill ${c}" style="width:${n / max * 100}%"></div></div><span class="num">${fmt(n)}</span></div>`).join('')}</div>
+  </div>
+  <div class="grid two">
+    <div class="card"><h3>Горячие лиды (прогноз AI)</h3>${hot.length ? `<table>${hot.map(l => `<tr class="click" onclick="openLead('${l.id}')"><td><b>${esc(l.company_name)}</b><div class="small muted">${esc(l.next_action || '')}</div></td><td>${catBadge(l.reply_category)}</td><td style="width:150px">${probBar(l.lead_probability)}</td></tr>`).join('')}</table>` : '<div class="empty">Ответов пока нет. Здесь появятся те, кто ответил, с вероятностью сделки</div>'}</div>
+    <div class="card"><h3>Ближайшие follow-up</h3>${due.length ? `<table>${due.map(l => `<tr class="click" onclick="openLead('${l.id}')"><td><b>${esc(l.company_name)}</b><div class="small muted">${badge(l.status)}</div></td><td class="small">${when(l.next_followup_at)}</td></tr>`).join('')}</table>` : '<div class="empty">Нет запланированных follow-up</div>'}</div>
+  </div>`;
+}
+
+function chart(rows, keys, money_ = false) {
+  const days = []; for (let i = 13; i >= 0; i--) days.push(new Date(Date.now() - i * 864e5).toISOString().slice(0, 10));
+  const by = Object.fromEntries((rows || []).map(r => [r.d, r]));
+  const vals = days.map(d => keys.map(k => +(by[d]?.[k] || 0)));
+  const max = Math.max(1e-9, ...vals.map(v => v.reduce((a, b) => a + b, 0)));
+  return `<div class="chart">${days.map((d, i) => {
+    const [a, b = 0] = vals[i]; const tot = a + b;
+    return `<div class="col" title="${d}: ${money_ ? money(tot) : tot}">
+      ${b ? `<div class="seg fu" style="height:${b / max * 120}px"></div>` : ''}
+      <div class="seg f" style="height:${Math.max(tot ? 2 : 0, a / max * 120)}px;${b ? 'border-radius:0' : ''}"></div>
+      <div class="d">${d.slice(8)}.${d.slice(5, 7)}</div></div>`; }).join('')}</div>`;
+}
+
+// ---------- Одобрение ----------
+function approve() {
+  const list = S.data.leads.filter(l => l.status === 'READY');
+  return `<h2>Одобрение писем</h2><p class="hint">Проверьте письмо, при необходимости поправьте и одобрите. Комментарий «что улучшить» AI учтёт в следующих письмах. Отправка произойдёт только после одобрения.</p>
+  ${list.length ? `<div class="approve">${list.map(l => `
+    <div class="card acard" id="a-${l.id}">
+      <div class="facts">
+        <h3 style="margin-bottom:4px"><a href="#" onclick="openLead('${l.id}');return false">${esc(l.company_name)}</a></h3>
+        <div class="small muted" style="margin-bottom:12px">${esc([l.city, l.state].filter(Boolean).join(', '))} · оценка ${l.lead_score ?? '—'} · ${l.website ? `<a href="${esc(l.website)}" target="_blank" rel="noopener">сайт</a>` : 'без сайта'}</div>
+        <div><b>Кому</b>${l.contact_name ? esc(l.contact_name) + (l.contact_role ? ' · ' + esc(l.contact_role) : '') : 'имя не найдено, пишем без имени'}<div class="small muted">${esc(l.contact_email)}</div></div>
+        <div><b>Чем занимаются</b>${esc(l.business_type || '—')}</div>
+        <div><b>Факт для письма</b>${esc(l.personalization_fact || '—')}</div>
+        <div><b>Почему это брокер</b>${esc(l.broker_evidence || '—')}</div>
+      </div>
+      <div>
+        <input class="in" id="s-${l.id}" value="${esc(l.email_subject)}" style="font-weight:600;margin-bottom:8px">
+        <textarea class="in" id="b-${l.id}">${esc(l.email_body)}</textarea>
+        <input class="in" id="n-${l.id}" placeholder="Что улучшить? (например: короче, без слова «assistant», упомянуть DAT)" style="margin-top:8px">
+        <div class="actions">
+          <button class="btn primary" onclick="doApprove('${l.id}')">Одобрить</button>
+          <button class="btn danger" onclick="doReject('${l.id}')">Отклонить</button>
+          <label class="small muted"><input type="checkbox" id="r-${l.id}"> сделать комментарий правилом для всех писем</label>
+        </div>
+      </div>
+    </div>`).join('')}</div>` : '<div class="card empty">Нет писем на одобрение. Новые появятся после следующего запуска конвейера.</div>'}`;
+}
+function doApprove(id) {
+  const l = S.data.leads.find(x => x.id === id);
+  const subject = document.getElementById('s-' + id).value, body = document.getElementById('b-' + id).value;
+  const note = document.getElementById('n-' + id).value.trim(), make_rule = document.getElementById('r-' + id).checked;
+  const edited = subject !== (l.email_subject || '') || body !== (l.email_body || '');
+  act(id, edited ? 'edit_approve' : 'approve', { subject, body, note, make_rule });
+}
+function doReject(id) {
+  const note = document.getElementById('n-' + id).value.trim(), make_rule = document.getElementById('r-' + id).checked;
+  act(id, 'reject', { note, make_rule });
+}
+
+// ---------- Follow-up ----------
+function followups() {
+  const list = S.data.leads.filter(l => l.initial_email_sent_at).sort((a, b) => (b.last_contact_at || '').localeCompare(a.last_contact_at || ''));
+  const step = l => ['initial_email_sent_at','followup_1_sent_at','followup_2_sent_at','followup_3_sent_at'].map(k => `<span class="${l[k] ? 'done' : ''}" title="${l[k] ? when(l[k]) : ''}"></span>`).join('');
+  return `<h2>Отправленные и follow-up</h2><p class="hint">Цепочка: первое письмо, затем follow-up на 3-й, 7-й и 12-й день. Если человек ответил, цепочка останавливается сама. Нажмите на строку, чтобы увидеть всю переписку.</p>
+  <div class="card tablewrap">${list.length ? `<table><tr><th>Компания</th><th>Этап</th><th>Статус</th><th>Первое письмо</th><th>Следующий follow-up</th><th>Ответ</th></tr>
+  ${list.map(l => `<tr class="click" onclick="openLead('${l.id}')"><td><b>${esc(l.company_name)}</b><div class="small muted">${esc(l.contact_email)}</div></td>
+    <td><div class="stage">${step(l)}</div></td><td>${badge(l.status)}</td><td class="small">${when(l.initial_email_sent_at)}</td>
+    <td class="small">${l.next_followup_at && !l.reply_received ? when(l.next_followup_at) : '—'}</td><td>${l.reply_category ? catBadge(l.reply_category) : '<span class="muted small">нет</span>'}</td></tr>`).join('')}</table>`
+  : '<div class="empty">Пока ничего не отправлено. После прогрева здесь будет вся история писем и follow-up.</div>'}</div>`;
+}
+
+// ---------- Ответы ----------
+function replies() {
+  const all = S.data.leads.filter(l => l.reply_category && l.reply_category !== 'OUT_OF_OFFICE');
+  const chips = [['ALL','Все'], ['INTERESTED','Заинтересованы'], ['QUESTION','Вопросы'], ['LATER','Тянут время'], ['REFERRAL','Переадресовали'], ['NOT_INTERESTED','Отказ'], ['UNSUBSCRIBE','Отписались']];
+  const list = all.filter(l => S.replyFilter === 'ALL' || l.reply_category === S.replyFilter).sort((a, b) => (b.lead_probability ?? -1) - (a.lead_probability ?? -1));
+  return `<h2>Ответы и прогноз</h2><p class="hint">AI читает каждый ответ, определяет тип, оценивает вероятность сделки (0–100%) и предлагает следующий шаг. «Тянут время» — интерес есть, но откладывают: к ним стоит вернуться в предложенный срок.</p>
+  <div class="chips">${chips.map(([k, t]) => `<button class="chip ${S.replyFilter === k ? 'on' : ''}" onclick="S.replyFilter='${k}';render()">${t} ${k === 'ALL' ? all.length : all.filter(l => l.reply_category === k).length}</button>`).join('')}</div>
+  <div class="card tablewrap">${list.length ? `<table><tr><th>Компания</th><th>Тип ответа</th><th>Вероятность сделки</th><th>Почему</th><th>Что сделать</th><th>Когда</th></tr>
+  ${list.map(l => `<tr class="click" onclick="openLead('${l.id}')"><td><b>${esc(l.company_name)}</b><div class="small muted">${esc((l.reply_text || '').slice(0, 110))}${(l.reply_text || '').length > 110 ? '…' : ''}</div></td>
+    <td>${catBadge(l.reply_category)}</td><td style="min-width:150px">${probBar(l.lead_probability)}</td><td class="small">${esc(l.reply_reasoning || '')}</td>
+    <td class="small"><b>${esc(l.next_action || '')}</b></td><td class="small">${when(l.reply_received_at)}</td></tr>`).join('')}</table>`
+  : '<div class="empty">Ответов пока нет</div>'}</div>`;
+}
+
+// ---------- Обучение AI ----------
+function training() {
+  const d = S.data;
+  return `<h2>Обучение AI</h2><p class="hint">Правила ниже добавляются ко всем новым письмам и follow-up. Пишите их простыми словами, можно по-русски: AI поймёт. Правила вступают в силу после следующей синхронизации.</p>
+  <div class="grid two" style="margin-top:0">
+    <div class="card"><h3>Правила для писем</h3>
+      <textarea class="in" id="newrule" style="min-height:80px" placeholder="Например: не используй слово «assistant», говори «tool». Пиши не длиннее 70 слов. Упоминай DAT и Truckstop."></textarea>
+      <div class="actions"><button class="btn primary" onclick="addRule()">Добавить правило</button></div>
+      <div style="margin-top:12px">${d.rules.length ? d.rules.map(r => `<div class="rule"><p>${esc(r.text)}<br><span class="small muted">${when(r.created_at)}</span></p><button class="btn ghost" onclick="delRule(${r.id})">Удалить</button></div>`).join('') : '<div class="empty">Правил пока нет</div>'}</div>
+    </div>
+    <div class="card"><h3>Ваши комментарии к письмам</h3>
+      ${d.feedback.length ? d.feedback.map(f => `<div class="rule"><p><b>${esc(f.company_name || '')}</b> · ${f.action === 'reject' ? '<span class="badge b-red">отклонено</span>' : '<span class="badge b-green">одобрено</span>'}<br>${esc(f.note)}<br><span class="small muted">${when(f.created_at)}</span></p></div>`).join('') : '<div class="empty">Комментарии появятся, когда вы будете одобрять и отклонять письма</div>'}
+    </div>
+  </div>`;
+}
+async function addRule() { const t = document.getElementById('newrule').value.trim(); if (!t) return; await api('/api/rules', { method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({ text:t }) }); toast('Правило добавлено'); load(); }
+async function delRule(id) { await api('/api/rules/' + id, { method:'DELETE' }); toast('Правило удалено'); load(); }
+
+// ---------- Расходы ----------
+function costs() {
+  const u = S.data.usage, k = stats();
+  const kpi = (label, val, sub = '') => `<div class="card kpi"><div class="label">${label}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`;
+  const researched = S.data.leads.filter(l => l.research_status && l.research_status !== 'PENDING').length;
+  return `<h2>Расходы AI</h2><p class="hint">Сколько стоят вызовы AI-модели. Цена считается по токенам.</p>
+  <div class="grid kpis">
+    ${kpi('Сегодня', money(u.today))}${kpi('Этот месяц', money(u.month))}${kpi('Всего', money(u.total), fmt(u.calls) + ' вызовов · ' + fmt(u.tokens) + ' токенов')}
+    ${kpi('На одну компанию', money(researched ? u.total / researched : 0), 'исследование + письмо')}
+    ${kpi('На одно отправленное', k.sent ? money(u.total / k.sent) : '—')}
+  </div>
+  <div class="grid two">
+    <div class="card"><h3>По дням</h3>${chart(u.byDay, ['cost'], true)}</div>
+    <div class="card"><h3>По шагам</h3>${u.byStep.length ? `<table><tr><th>Шаг</th><th>Вызовов</th><th>Токенов</th><th>Стоимость</th></tr>${u.byStep.map(s => `<tr><td>${STEP[s.step] || esc(s.step)}</td><td>${fmt(s.calls)}</td><td>${fmt((s.tin || 0) + (s.tout || 0))}</td><td><b>${money(s.cost)}</b></td></tr>`).join('')}</table>` : '<div class="empty">Данных пока нет</div>'}</div>
+  </div>`;
+}
+
+// ---------- Все компании ----------
+function leads() {
+  const q = S.leadSearch.toLowerCase();
+  const list = S.data.leads.filter(l => (!S.leadFilter || l.status === S.leadFilter) && (!q || [l.company_name, l.contact_email, l.state, l.mc_number].join(' ').toLowerCase().includes(q)));
+  const statuses = Object.keys(S.data.statuses).sort();
+  return `<h2>Все компании</h2><p class="hint">Все компании, которые конвейер взял в работу. Нажмите на строку, чтобы открыть карточку.</p>
+  <div class="actions" style="margin:0 0 12px"><input class="in" id="lsearch" style="max-width:320px" placeholder="Поиск: компания, email, штат, MC" value="${esc(S.leadSearch)}" oninput="setSearch(this.value)">
+    <select class="in" style="max-width:220px" onchange="S.leadFilter=this.value;render()"><option value="">Все статусы</option>${statuses.map(s => `<option value="${s}" ${S.leadFilter === s ? 'selected' : ''}>${(STATUS[s] || [s])[0]} (${S.data.statuses[s]})</option>`).join('')}</select></div>
+  <div class="card tablewrap"><table><tr><th>Компания</th><th>Штат</th><th>Статус</th><th>Оценка</th><th>Прогноз</th><th>Контакт</th><th>Обновлено</th></tr>
+  ${list.slice(0, 500).map(l => `<tr class="click" onclick="openLead('${l.id}')"><td><b>${esc(l.company_name)}</b><div class="small muted">${esc(l.mc_number || '')}</div></td><td>${esc(l.state || '')}</td><td>${badge(l.status)}</td>
+    <td>${l.lead_score ?? '—'}</td><td style="min-width:130px">${probBar(l.lead_probability)}</td><td class="small">${esc(l.contact_name || '')}<div class="muted">${esc(l.contact_email || '')}</div></td><td class="small">${when(l.updated_at)}</td></tr>`).join('')}</table>
+  ${list.length ? '' : '<div class="empty">Ничего не найдено</div>'}</div>`;
+}
+
+function setSearch(v) { S.leadSearch = v; render(); const el = document.getElementById('lsearch'); el.focus(); el.setSelectionRange(v.length, v.length); }
+
+// ---------- Карточка компании ----------
+async function openLead(id) {
+  const r = await api('/api/lead/' + encodeURIComponent(id));
+  const l = r.lead;
+  const kindName = { initial:'Первое письмо', followup_1:'Follow-up 1', followup_2:'Follow-up 2', followup_3:'Follow-up 3', reply_in:'Ответ' };
+  const btns = [
+    l.status === 'READY' ? `<button class="btn primary" onclick="act('${l.id}','approve').then(closeDrawer)">Одобрить письмо</button>` : '',
+    l.status === 'REJECTED' ? `<button class="btn" onclick="act('${l.id}','reopen').then(closeDrawer)">Вернуть на одобрение</button>` : '',
+    l.reply_received && !l.meeting_booked ? `<button class="btn primary" onclick="act('${l.id}','meeting').then(closeDrawer)">Отметить встречу</button>` : '',
+    !l.do_not_contact ? `<button class="btn danger" onclick="if(confirm('Больше не писать этой компании?'))act('${l.id}','dnc').then(closeDrawer)">Не писать больше</button>` : '<span class="badge b-red">не писать</span>',
+  ].join('');
+  document.getElementById('drawer').innerHTML = `
+    <div class="head"><b style="flex:1">${esc(l.company_name)}</b>${badge(l.status)}<button class="btn ghost" onclick="closeDrawer()">✕</button></div>
+    <div class="body">
+      <div class="actions" style="margin:0">${btns}</div>
+      ${l.lead_probability != null ? `<div class="card"><h3>Прогноз AI</h3>${probBar(l.lead_probability)}<p class="small" style="margin:8px 0 0">${esc(l.reply_reasoning || '')}</p><p style="margin:8px 0 0"><b>Следующий шаг:</b> ${esc(l.next_action || '—')}</p></div>` : ''}
+      <div class="card kv">
+        <div>Контакт</div><div>${esc(l.contact_name || '—')} ${l.contact_role ? '· ' + esc(l.contact_role) : ''}</div>
+        <div>Email</div><div>${esc(l.contact_email || '—')}</div><div>Телефон</div><div>${esc(l.phone || '—')}</div>
+        <div>Сайт</div><div>${l.website ? `<a href="${esc(l.website)}" target="_blank" rel="noopener">${esc(l.website)}</a>` : '—'}</div>
+        <div>Где</div><div>${esc([l.city, l.state].filter(Boolean).join(', ') || '—')}</div><div>MC</div><div>${esc(l.mc_number || '—')}</div>
+        <div>Оценка</div><div>${l.lead_score ?? '—'} · ${esc(l.company_scale || '')}</div><div>Чем занимаются</div><div>${esc(l.business_type || '—')}</div>
+        <div>Почему брокер</div><div>${esc(l.broker_evidence || '—')}</div><div>Кратко</div><div>${esc(l.summary || '—')}</div>
+      </div>
+      <h3 style="margin:6px 0 0">Переписка</h3>
+      ${r.messages.length ? r.messages.map(m => `<div class="msg ${m.kind === 'reply_in' ? 'in' : ''}"><div class="meta"><b>${kindName[m.kind] || esc(m.kind)}</b><span>${when(m.created_at)}</span></div><div style="font-weight:600;margin-bottom:6px">${esc(m.subject || '')}</div><pre>${esc(m.body || '')}</pre></div>`).join('')
+        : l.email_body ? `<div class="msg"><div class="meta"><b>Черновик (ещё не отправлен)</b></div><div style="font-weight:600;margin-bottom:6px">${esc(l.email_subject || '')}</div><pre>${esc(l.email_body)}</pre></div>` : '<div class="empty">Писем пока нет</div>'}
+      <h3 style="margin:6px 0 0">История</h3>
+      <div class="card">${r.events.length ? `<table>${r.events.map(e => `<tr><td class="small muted" style="white-space:nowrap">${when(e.timestamp)}</td><td class="small"><b>${esc(e.action)}</b> ${e.status === 'ERROR' ? '<span class="badge b-red">ошибка</span>' : ''}<div class="muted">${esc((e.detail || '').slice(0, 160))}</div></td></tr>`).join('')}</table>` : '<div class="empty">Пусто</div>'}</div>
+    </div>`;
+  document.getElementById('drawer').classList.add('open'); document.getElementById('dbg').classList.add('open');
+}
+function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('dbg').classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+load();
+setInterval(load, 120000);
+</script>
+</body>
+</html>

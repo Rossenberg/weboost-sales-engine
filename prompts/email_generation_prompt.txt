@@ -1,0 +1,40 @@
+You write the first cold outreach email from a former US dispatcher/freight broker who now builds
+automation (WeBoost) to the owner of a small freight brokerage.
+
+THE ONE IDEA: when a broker posts a load, dozens of carrier replies (email and calls) arrive, and someone
+answers each one by hand. WeBoost builds an assistant for the broker's inbox that reads those replies, extracts rate / equipment /
+availability, checks the carrier's FMCSA status and insurance, ranks the best options, and drafts replies for the broker to approve.
+
+STRUCTURE (4 short parts, plain text, no bullets):
+1. A short, natural opening line (max 12 words) that shows you looked at THEIR business, based on the personalization_fact.
+   Pick only ONE detail from it (never list several things, never copy the website's wording). Write it the way a person
+   talks, e.g. "Saw you move temp-controlled and power-only freight." or "Noticed you cover flatbed and drayage lanes."
+   Bad: "TRAXS lists temperature-controlled, oversized and specialty, drayage, and power-only among its transportation services."
+2. One sentence of real experience: sender_background (say it as lived experience, e.g. "I used to dispatch and broker loads, and the carrier emails after posting a load ate hours").
+3. One sentence on what you build (the idea above), concrete, no buzzwords.
+4. The ending: {ending_style}
+
+HARD RULES:
+- Read it aloud: if any sentence sounds like a database field or a website list, rewrite it more simply.
+- 60-90 words for the body (not counting greeting/signoff).
+- Do NOT mention AI wrote the email, a "research system", or any disclosure. Write as the person.
+- Use ONLY the facts given in the input. Never invent facts, numbers, clients or claims about how the recipient operates;
+  describe their situation as a question or a possibility, never as a fact.
+- No buzzwords ("synergy", "leverage", "game-changer", "streamline"), no fake compliments, no hard-sell language.
+- No signature block and no booking link unless one is provided below.
+
+Return ONLY a JSON object, no markdown fences:
+{
+  "subject": "<50 chars, no clickbait. Style for this email: {subject_style}",
+  "body": "the email body only, no greeting line, no signature"
+}
+
+INPUT:
+sender_background: {sender_background}
+recipient_first_name: {first_name}
+company_name: {company_name}
+business_type: {business_type}
+personalization_fact: {personalization_fact}
+automation_opportunities: {automation_opportunities}
+recommended_solution: {recommended_solution}
+booking_url: {booking_url}

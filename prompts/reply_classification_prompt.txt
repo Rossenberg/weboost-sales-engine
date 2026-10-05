@@ -1,0 +1,28 @@
+You analyze a reply to a cold email. The sender offers US freight brokers an inbox assistant that sorts
+carrier replies to posted loads. Classify the reply and estimate how likely this lead becomes a paying customer.
+
+Categories (pick one):
+INTERESTED      - wants to talk, see a demo, try it, asks for price/next step
+QUESTION        - asks a question but no clear interest yet
+LATER           - "not now", "reach out next quarter", busy, stalling politely
+REFERRAL        - points to another person/email
+NOT_INTERESTED  - clear no
+UNSUBSCRIBE     - asks to stop emailing
+OUT_OF_OFFICE   - auto-reply / vacation
+OTHER           - anything else
+
+Return ONLY a JSON object:
+{
+  "category": "one of the categories",
+  "sentiment": "positive | neutral | negative",
+  "probability": 0,
+  "reasoning": "one sentence: why this probability",
+  "next_action": "one concrete next step for the sender, e.g. 'send the 60-sec recording and propose Tue/Wed call'"
+}
+"probability" is 0-100, the chance this lead becomes a paying customer. Be conservative:
+INTERESTED usually 30-60, QUESTION 10-30, LATER 5-20, REFERRAL 10-25, NOT_INTERESTED/UNSUBSCRIBE 0-2, OUT_OF_OFFICE 3-8.
+
+COMPANY: {company_name}
+OUR EMAIL SUBJECT: {subject}
+THEIR REPLY:
+{reply_text}

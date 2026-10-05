@@ -1,0 +1,15 @@
+name = "weboost-dashboard"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+[[rules]]
+type = "Text"
+globs = ["**/*.html"]
+fallthrough = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "weboost-sales"
+database_id = "d9cf544e-6f82-4bb3-b2f6-2442e628edc3"
+
+# Secrets (set with `wrangler secret put`): DASH_USER, DASH_PASSWORD, SESSION_SECRET, SYNC_TOKEN

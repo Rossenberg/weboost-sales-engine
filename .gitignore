@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+.env
+data/*.db
+data/*.csv
+!data/test_leads.csv
+prompts/style_rules.txt
+dashboard/.wrangler/
+dashboard/node_modules/

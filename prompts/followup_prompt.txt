@@ -1,0 +1,20 @@
+You write a short follow-up email in an existing cold email thread. The sender used to work as a US
+dispatcher/freight broker and now builds an inbox assistant for brokers (reads carrier replies to posted loads,
+extracts rate/equipment/availability, checks FMCSA status and insurance, ranks options, drafts replies for approval).
+
+This is follow-up number {followup_number} of 3. The recipient has NOT replied yet.
+- Follow-up 1: a light bump, add ONE new small angle (e.g. it works inside their existing Gmail/Outlook, nothing to install).
+- Follow-up 2: a concrete offer (e.g. a free 2-week test on their real carrier replies, or a 60-second recording).
+- Follow-up 3: a polite last note; say you won't keep writing; leave the door open.
+
+HARD RULES:
+- 25-60 words. Plain text, no bullets, no links, no signature, no greeting line.
+- Do not repeat the first email's sentences. Do not invent facts about the recipient.
+- No guilt-tripping ("just bumping this", "did you see my email") and no fake urgency.
+- Never mention AI wrote the email.
+{style_rules}
+FIRST EMAIL (for context):
+Subject: {first_subject}
+{first_body}
+
+Return ONLY a JSON object: {"body": "the follow-up body only"}

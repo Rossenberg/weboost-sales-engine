@@ -1,0 +1,9 @@
+company_name,website,first_name,last_name,full_name,job_title,email,linkedin_url,country,state,city,company_size,industry,source
+FastShip Logistics,https://fastship-test.example.com,John,Smith,John Smith,Founder,john.smith@fastship-test.example.com,https://linkedin.com/in/johnsmith-test,USA,TX,Dallas,25,3PL,test_data
+Harbor Point Fulfillment,https://harborpoint-test.example.com,Maria,Garcia,Maria Garcia,CEO,maria.garcia@harborpoint-test.example.com,https://linkedin.com/in/mariagarcia-test,USA,CA,Long Beach,40,Fulfillment,test_data
+Midwest Freight Solutions,https://midwestfreight-test.example.com,Dave,Nowak,Dave Nowak,Owner,dave.nowak@midwestfreight-test.example.com,https://linkedin.com/in/davenowak-test,USA,IL,Chicago,15,Logistics,test_data
+Coastal 3PL Group,https://coastal3pl-test.example.com,Karen,Lee,Karen Lee,Co-Founder,karen.lee@coastal3pl-test.example.com,https://linkedin.com/in/karenlee-test,USA,FL,Miami,60,3PL,test_data
+Summit Warehouse Partners,https://summitwarehouse-test.example.com,Tom,Baker,Tom Baker,COO,tom.baker@summitwarehouse-test.example.com,https://linkedin.com/in/tombaker-test,USA,OH,Columbus,30,Warehousing,test_data
+Lonestar Fulfillment Co,https://lonestarfulfillment-test.example.com,Angela,Torres,Angela Torres,Founder,angela.torres@lonestarfulfillment-test.example.com,https://linkedin.com/in/angelatorres-test,USA,TX,Austin,20,Fulfillment,test_data
+Great Lakes Logistics,https://greatlakeslogistics-test.example.com,Steve,Miller,Steve Miller,President,steve.miller@greatlakeslogistics-test.example.com,https://linkedin.com/in/stevemiller-test,USA,MI,Detroit,45,Logistics,test_data
+Pacific Crate & Freight,https://pacificcrate-test.example.com,Linda,Chen,Linda Chen,Operations Manager,linda.chen@pacificcrate-test.example.com,https://linkedin.com/in/lindachen-test,USA,WA,Seattle,35,3PL,test_data
