@@ -1,0 +1,1 @@
+{"name":"weboost-cover","private":true,"scripts":{"render":"remotion still src/index.ts Cover out/cover-4x3.png && remotion still src/index.ts CoverWide out/cover-16x9.png"},"dependencies":{"@remotion/cli":"^4.0.534","@remotion/google-fonts":"^4.0.534","react":"^19.3.0","react-dom":"^19.3.0","remotion":"^4.0.534"}}
