@@ -166,7 +166,7 @@ export default {
       if (req.method === "POST") {
         const f = await req.formData();
         const ok = safeEqual(String(f.get("user") || ""), env.DASH_USER || "") && safeEqual(String(f.get("password") || ""), env.DASH_PASSWORD || "");
-        if (!ok) return html(LOGIN.replace("<!--ERR-->", '<p class="err">Неверный логин или пароль</p>'), 401);
+        if (!ok) return html(LOGIN.replace("<!--ERR-->", '<p class="err">Wrong username or password</p>'), 401);
         const cookie = `wb_session=${await makeSession(env, env.DASH_USER)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${SESSION_DAYS * 86400}`;
         return new Response(null, { status: 303, headers: { Location: "/", "Set-Cookie": cookie } });
       }
