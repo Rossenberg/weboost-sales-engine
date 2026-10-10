@@ -13,13 +13,3 @@ database_name = "weboost-sales"
 database_id = "d9cf544e-6f82-4bb3-b2f6-2442e628edc3"
 
 # Secrets (set with `wrangler secret put`): DASH_USER, DASH_PASSWORD, SESSION_SECRET, SYNC_TOKEN
-
-# Demo copy for product videos: separate Worker + separate database with sample data.
-# Seed/refresh: python3 ../scripts/demo_seed.py ; remove: npx wrangler delete --env demo
-[env.demo]
-name = "weboost-demo"
-
-[[env.demo.d1_databases]]
-binding = "DB"
-database_name = "weboost-demo"
-database_id = "29001ec4-9e0c-4a5f-b8ea-107b438d668a"
